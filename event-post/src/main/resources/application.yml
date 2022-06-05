@@ -1,0 +1,46 @@
+server:
+  port: 8080
+  error.include-message: always
+
+app:
+  event-consumer1:
+    host: localhost
+    port: 7001
+  event-consumer2:
+    host: localhost
+    port: 7002
+logging:
+  level:
+    root: INFO
+
+spring:
+  cloud:
+    stream:
+      default-binder: rabbit
+      default:
+        contentType: application/json
+      bindings:
+        output-consumer1:
+          destination: consumers1
+          # 제작자 설정. <spring.cloud.stream.bindings.<bindingName>.producer.>로 시작.
+          # 상세 옵션 : https://docs.spring.io/spring-cloud-stream/docs/current/reference/html/spring-cloud-stream.html#_producer_properties
+          producer:
+            # 필수 전송 그룹. 메시지 전달이 보장되어야 하는 그룹 목록을 지정
+            required-groups:
+              - consumers
+        output-consumer2:
+          destination: consumers2
+          producer:
+            required-groups:
+              - consumers
+      # Kafka 상세 옵션 : https://docs.spring.io/spring-cloud-stream/docs/current/reference/html/spring-cloud-stream-binder-kafka.html#_configuration_options
+      kafka:
+        binder:
+          brokers: 127.0.0.1
+          defaultBrokerPort: 9092
+  # Spring Boot에서 지원하는 RebbitMQ 설정 : https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#messaging.amqp.rabbitmq
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: guest
+    password: guest

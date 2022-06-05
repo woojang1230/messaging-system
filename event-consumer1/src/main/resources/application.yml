@@ -1,0 +1,58 @@
+server.port: 7001
+server.error.include-message: always
+
+spring:
+  cloud:
+    stream:
+      # 기본 바인더 설정. defaultBinder 값 변경으로 간단하게 kafka로 변경
+      defaultBinder: rabbit
+      default:
+        contentType: application/json
+      bindings:
+        # @StreamListener(target = Sink.INPUT)에 대응하는 바인딩 이름. 이는 소비자일 경우에 "input"으로 지정
+        input:
+          # "input"이라는 binding은 "consumers1"이라는 이름을 가짐. 메시지 포스터는 이 타깃으로 destination을 지정
+          destination: consumers1-topic
+          # "input"이라는 binding은 "consumers1Group"이라는 그룹에 속함.
+          group: consumers1Group
+          # 소비자 설정. <spring.cloud.stream.bindings.<bindingName>.consumer.>로 시작됨.
+          # 상세 옵션 : https://docs.spring.io/spring-cloud-stream/docs/current/reference/html/spring-cloud-stream.html#_consumer_properties
+          consumer:
+            # 처리 실패시 재처리 시도 횟수. 기본값 3
+            maxAttempts: 3
+            # 초기(첫) 재시도 간격. 기본값 1000
+            backOffInitialInterval: 500
+            # 최대 재시도 간격. 기본값 10000
+            backOffMaxInterval: 1000
+            backOffMultiplier: 2.0
+      rabbit:
+        bindings:
+          input:
+            # Consumer일 경우 RabbitMQ에 대한 설정 : https://docs.spring.io/spring-cloud-stream/docs/current/reference/html/spring-cloud-stream-binder-rabbit.html#_rabbitmq_consumer_properties
+            consumer:
+              autoBindDlq: true
+              republishToDlq: true
+      kafka:
+        # Kafka Binder에 대한 설정 : https://docs.spring.io/spring-cloud-stream/docs/current/reference/html/spring-cloud-stream-binder-kafka.html#_kafka_binder_properties
+        binder:
+          brokers: 127.0.0.1
+          defaultBrokerPort: 9092
+        bindings:
+          input:
+            # Consumer일 경우 Kafka에 대한 설정 : https://docs.spring.io/spring-cloud-stream/docs/current/reference/html/spring-cloud-stream-binder-kafka.html#kafka-consumer-properties
+            consumer:
+              enableDlq: true
+
+# Spring Boot에서 지원하는 RebbitMQ 설정 : https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#messaging.amqp.rabbitmq
+spring.rabbitmq:
+  host: 127.0.0.1
+  port: 5672
+  username: guest
+  password: guest
+
+logging:
+  level:
+    root: INFO
+
+management.endpoint.health.show-details: "ALWAYS"
+management.endpoints.web.exposure.include: "*"
