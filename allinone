@@ -1,5 +1,5 @@
 #!/bin/sh
-COMPOSE_FILE=./docker-compose.yml
+COMPOSE_FILE=./docker-compose-kafka.yml
 
 docker-compose down --remove-orphans --rmi local -v && \
 docker pull --platform=linux/arm64 wurstmeister/kafka:2.13-2.8.1 && \
