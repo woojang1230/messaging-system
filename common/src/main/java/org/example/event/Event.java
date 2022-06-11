@@ -4,6 +4,11 @@ import static java.time.LocalDateTime.now;
 
 import java.time.LocalDateTime;
 
+import lombok.Getter;
+import lombok.ToString;
+
+@Getter
+@ToString
 public class Event<K, T> {
 
     public enum Type {CREATE, DELETE}
@@ -25,21 +30,5 @@ public class Event<K, T> {
         this.key = key;
         this.data = data;
         this.eventCreatedAt = now();
-    }
-
-    public Type getEventType() {
-        return eventType;
-    }
-
-    public K getKey() {
-        return key;
-    }
-
-    public T getData() {
-        return data;
-    }
-
-    public LocalDateTime getEventCreatedAt() {
-        return eventCreatedAt;
     }
 }

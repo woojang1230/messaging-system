@@ -20,17 +20,22 @@ spring:
       default:
         contentType: application/json
       bindings:
-        output-consumer1:
-          destination: consumers1
+        # 바인더의 이름은 빈으로 등록된 <메소드이름>-out-<INDEX>로 구성된다
+        consumer1-out-0:
+          destination: createProduct
           # 제작자 설정. <spring.cloud.stream.bindings.<bindingName>.producer.>로 시작.
           # 상세 옵션 : https://docs.spring.io/spring-cloud-stream/docs/current/reference/html/spring-cloud-stream.html#_producer_properties
           producer:
+#            partitionKeyExpression: payload.key
+#            partitionCount: 2
             # 필수 전송 그룹. 메시지 전달이 보장되어야 하는 그룹 목록을 지정
             required-groups:
               - consumers
-        output-consumer2:
-          destination: consumers2
+        consumer2-out-0:
+          destination: deleteProduct
           producer:
+#            partitionKeyExpression: payload.key
+#            partitionCount: 2
             required-groups:
               - consumers
       # Kafka 상세 옵션 : https://docs.spring.io/spring-cloud-stream/docs/current/reference/html/spring-cloud-stream-binder-kafka.html#_configuration_options
