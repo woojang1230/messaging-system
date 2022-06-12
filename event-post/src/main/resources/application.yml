@@ -16,7 +16,7 @@ logging:
 spring:
   cloud:
     stream:
-      default-binder: rabbit
+      default-binder: kafka
       default:
         contentType: application/json
       bindings:
@@ -49,3 +49,7 @@ spring:
     port: 5672
     username: guest
     password: guest
+management:
+  health:
+    rabbit:
+      enabled: false
